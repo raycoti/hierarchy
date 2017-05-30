@@ -1,0 +1,22 @@
+{
+  "art":
+  [
+    {
+      "name": "Existence is Pain",
+      "description": "Drawing 1",
+      "imageUrl": "existenceispain.png"
+      },
+      {
+      "name": "Bubble Befuddle",
+      "description": "Bubble game",
+      "imageUrl": "bubble.jpg"
+      
+    }, 
+    {
+      "name": "Soul searching",
+      "description": "Searching ",
+      "imageUrl": "soulSearching1.png"
+      
+    }
+  ]
+}
