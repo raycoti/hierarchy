@@ -6,7 +6,17 @@ module.exports = router;
 router.get('/relationships/:subGroupId', (req, res, next)=> {
   Relationship.findAll({where: {subGroupId: req.params.subGroupId}})
   .then(relationships => {
-    res.send(relationships);
+     //returns an array
+    // relationships.reduce(){
+    const hierarchy = relationships.reduce((acc,cur)=>{
+       acc[cur.personId] = {
+         children: cur.children,
+         role: cur.role
+        };
+        return acc;
+      }, {});
+    res.send(hierarchy)
+
     /*[{
         Id: 1,
         children: '2,3,4',

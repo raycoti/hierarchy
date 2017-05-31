@@ -1,7 +1,7 @@
 
-var db = require('./index')
-var data = require('../seed.json')
-var Promise = require("bluebird");
+var db = require('./index');
+var data = require('../seed.json');
+var Promise = require('bluebird');
 
 const seedDatabase = () => {
   const keys = Object.keys(data);

@@ -11,7 +11,7 @@ const initialState = {
   name: 'Math Department'
   lead: 'Professor algebra'
   hierarchy { key: personid, value childrenIds
-    1 : '2,3' 
+    1 : '2,3'
     2 : ''
     3 : ''
   }
@@ -47,3 +47,20 @@ export const setHierarchy = (hierarchy) => ({
    type: SET_LEAD,
    lead
  });
+
+export const getSubgroup = (id) => {
+  return (dispatch) => {
+    axios.get(`api/subgroup/${id}`)
+      .then(subgroup => {
+        dispatch(setSubgroup(subgroup.data.name));
+        dispatch(setLead(subgroup.data.leadID));
+      });
+  };
+};
+
+export const getHierarchy = (groupId) => {
+  return (dispatch) => {
+    axios.get(`api/relationships/${groupId}`)
+      .then(subgroup => dispatch(setHierarchy(subgroup.data.hierarchy)));
+  };
+};
