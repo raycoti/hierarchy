@@ -1,60 +1,93 @@
 {
-  "projects":
+  "subGroups":
   [
     {
-      "name": "Interactive Narrative",
-      "description": "<p>For my senior capstone project I worked on virtual environments to experiment with the power of immersion and its use for personal narratives. I hoped that it would create a deeper sense of connection with the story in terms of investment and emotional response (e.g to express the feeling of something unobtainable I would have a representation of it move away from the user each time they get close).</p><p>I knew the biggest challenge would be the added layer of freedom given to users. When given an environment to explore, any restrictions or imposed sense of direction would break immersion. I could not have a structured narrative that relied on users taking a certain path. It was for this reason my project revolved around the idea that people would discover bits and pieces of a story in the scene. Although both run-throughs seem to follow the same path, users are free to move anywhere. Lines of the story cycle when a user reads, the lines do not reset to the beginning so next visitors start reading where the previous user left off.</p><h>Future work</h><p>In a later post I will go into detail what the many themes are to each enviornment and what future developments I want to implement.</p><a>https://www.youtube.com/watch?v=tkzGKdzG9Fk</a>",
-      "imageUrl": "vr.png"
+      "id": "1",
+      "name": "Math Club",
+      "description": "",
+      "leadID": "2"
       },
       {
-      "name": "KeyQuest",
-      "description": "<p>A 3D adventure game in which players must find all the keys to unlock the path to the goal. Keys are hidden away by destructable and movable blocks. Movement is done by 'wasd', press enter to attack and space to jump. </p><a>https://playcanv.as/p/C6vQ4bnn/ </a>",
-      "imageUrl": "game4.png"
-      
-    }, 
-    {
-      "name": "Level Creator",
-      "description": "<p>A React application for creating levels for games that utilize a coordinate system. Choose between several terrain types such as water, lava, rocks and grass. Set keys, locks, enemies and movable rocks to create clever level puzzles. </p><h>Future Work</h><p>I am working on games that will use the level data from this database! My demo KeyQuest utilizes a local JSON file but will soon make calls to the API routes I set up here. </p><a>https://simplelevelcreator2.herokuapp.com/</a>",
-      "imageUrl": "example.jpeg"
-      
+      "id": "2",
+      "name": "Math Committee",
+      "description": "",
+      "leadID": "1"
     }
   ],
-  "arts":
+  "groups":
   [
     {
-      "name": "Existence is Pain",
-      "description": "<p>This drawing came from a methaphor about life and how the presence of hope does not negate the fact that life can be full of pain. That often times it is the presence of hope that makes life more painful.</p><i>existenceispain.png</i>",
-      "imageUrl": "existenceispain.png"
+      "id": "1",      
+      "name": "C College",
+      "description": ""
+    }
+  ],
+  "persons":
+  [
+    {
+      "id": "1",
+      "name": "Prof. Calc",
+      "description": "",
+      "groupId": "1" 
+
       },
       {
-      "name": "Flying",
-      "description": "Bubble game",
-      "imageUrl": "hope.jpg"
+        "id": "2",
+      "name": "Prof. Algebra",
+      "description": "",
+      "groupId": "1"
       
     }, 
     {
-      "name": "Soul searching",
-      "description": "Searching",
-      "imageUrl": "soulSearching3.png"
-      
-    },
+      "id": "3",
+      "name": "Prof Discrete",
+      "description": "",
+      "groupId": "1"
+    }
+  ],
+   "relationships":
+  [
+    {
+      "role": "Secretary",
+      "description": "",
+      "children": "",
+      "subGroupId":"1",
+      "personId": "1" 
+      },
       {
-      "name": "My City",
-      "description": "Bubble game",
-      "imageUrl": "mycity.jpg"
-      
+      "role": "Leader",
+      "description": "",
+      "children": "1,3",
+      "subGroupId":"1",
+      "personId": "2"
     },
-      {
-      "name": "landscape 1",
-      "description": "Bubble game",
-      "imageUrl": "scape1.png"
-      
+    {
+      "role": "Treasurer",
+      "description": "",
+      "children": "",
+      "subGroupId":"1",
+      "personId": "3"
     },
+    {
+      "role": "Leader",
+      "description": "",
+      "children": "2,3",
+      "subGroupId":"2",
+      "personId": "1" 
+      },
       {
-      "name": "landscape 2",
-      "description": "Bubble game",
-      "imageUrl": "scape2.png"
-      
+      "role": "Treasurer",
+      "description": "",
+      "children": "",
+      "subGroupId":"2",
+      "personId": "2"
+    },
+    {
+      "role": "Secretary",
+      "description": "",
+      "children": "",
+      "subGroupId":"2",
+      "personId": "3"
     }
   ]
 }
