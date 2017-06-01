@@ -1,9 +1,10 @@
 import axios from 'axios';
-import {SET_SUBGROUP, SET_HIERARCHY, SET_LEAD} from '../constants';
+import {SET_SUBGROUP, SET_HIERARCHY, SET_LEAD, SET_SUBGROUPS} from '../constants';
 
 const initialState = {
   name: '',
   lead: '',
+  subGroups: [],
   hierarchy: {}
 };
 /*
@@ -20,6 +21,9 @@ const initialState = {
 export default function(state = initialState, action){
   const newState = Object.assign({}, state);
   switch (action.type){
+    case SET_SUBGROUPS:
+      newState.subGroups = action.subGroups;
+      break;
     case SET_SUBGROUP:
       newState.name = action.name;
       break;
@@ -35,6 +39,11 @@ export default function(state = initialState, action){
   return newState;
 }
 
+export const setSubgroups = (subGroups) => ({
+  type: SET_SUBGROUPS,
+  subGroups
+});
+
 export const setSubgroup = (name) => ({
   type: SET_SUBGROUP,
   name
@@ -43,7 +52,7 @@ export const setHierarchy = (hierarchy) => ({
   type: SET_HIERARCHY,
   hierarchy
 }); //this assumes we never have to add a person to the hierarchy....... if user desires to be able to add people to a hierarchy we would need to break this up into addUser to hierarchy/add parent/add child/remove child/parent.
- export const setLead = (lead) => ({
+export const setLead = (lead) => ({
    type: SET_LEAD,
    lead
  });

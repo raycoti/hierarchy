@@ -7,9 +7,18 @@ module.exports = router;
 router.get('/groups', (req, res, next) => {
   Group.findAll({})
   .then((groups) => {
-    res.send(groups);
+    res.send(groups.reduce((acc,cur)=>{
+      acc[cur.name]={
+        des: cur.description,
+        id: cur.id
+      }
+      return acc;
+    }, {})
+    );
   });
 });
+
+//object keys
 
 router.get('/group/:id', (req, res, next) =>{
   Group.findOne({
