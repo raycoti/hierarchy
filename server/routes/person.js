@@ -6,7 +6,13 @@ module.exports = router;
 router.get('/persons/:groupId', (req, res, next) => {
   Person.findAll({where:{groupId: req.params.groupId}})
   .then((persons) => {
-    res.send(persons);
+    res.send(persons.reduce((acc, cur) => {
+      acc[cur.id] = {
+        name: cur.name,
+        des: cur.description
+      }
+      return acc;
+    }, {}));
   })
 })
 

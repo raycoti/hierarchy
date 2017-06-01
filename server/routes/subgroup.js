@@ -4,8 +4,8 @@ const Sequelize = require('sequelize');
 const SubGroup = require('../../db/models').SubGroup;
 module.exports = router;
 
-router.get('/subgroups', (req, res, next) => {
-  SubGroup.findAll({})
+router.get('/subgroups/:groupId', (req, res, next) => {
+  SubGroup.findAll({where: {groupId: req.params.groupId}})
   .then((groups) => {
     res.send(groups);
   });

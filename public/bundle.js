@@ -64,11 +64,11 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(291);
+	var _Root = __webpack_require__(292);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
-	var _homeContainer = __webpack_require__(293);
+	var _homeContainer = __webpack_require__(294);
 	
 	var _homeContainer2 = _interopRequireDefault(_homeContainer);
 	
@@ -26902,15 +26902,15 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _reduxLogger = __webpack_require__(283);
+	var _reduxLogger = __webpack_require__(284);
 	
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 	
-	var _reduxThunk = __webpack_require__(289);
+	var _reduxThunk = __webpack_require__(290);
 	
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 	
-	var _reduxDevtoolsExtension = __webpack_require__(290);
+	var _reduxDevtoolsExtension = __webpack_require__(291);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -26940,10 +26940,15 @@
 	
 	var _subGroup2 = _interopRequireDefault(_subGroup);
 	
+	var _group = __webpack_require__(283);
+	
+	var _group2 = _interopRequireDefault(_group);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = (0, _redux.combineReducers)({
-	  sub: _subGroup2.default
+	  sub: _subGroup2.default,
+	  main: _group2.default
 	});
 
 /***/ }),
@@ -26955,7 +26960,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.getHierarchy = exports.getSubgroup = exports.setLead = exports.setHierarchy = exports.setSubgroup = exports.setSubgroups = undefined;
+	exports.getHierarchy = exports.getSubgroup = exports.getSubgroups = exports.setLead = exports.setHierarchy = exports.setSubgroup = exports.setSubgroups = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -27032,6 +27037,14 @@
 	  };
 	};
 	
+	var getSubgroups = exports.getSubgroups = function getSubgroups(groupId) {
+	  return function (dispatch) {
+	    _axios2.default.get('api/subgroups/' + groupId).then(function (subgroups) {
+	      dispatch(setSubgroups(subgroups.data));
+	    });
+	  };
+	};
+	
 	var getSubgroup = exports.getSubgroup = function getSubgroup(id) {
 	  return function (dispatch) {
 	    _axios2.default.get('api/subgroup/' + id).then(function (subgroup) {
@@ -27044,7 +27057,7 @@
 	var getHierarchy = exports.getHierarchy = function getHierarchy(groupId) {
 	  return function (dispatch) {
 	    _axios2.default.get('api/relationships/' + groupId).then(function (subgroup) {
-	      return dispatch(setHierarchy(subgroup.data.hierarchy));
+	      return dispatch(setHierarchy(subgroup.data));
 	    });
 	  };
 	};
@@ -30584,6 +30597,7 @@
 	var SET_HIERARCHY = exports.SET_HIERARCHY = 'SET_HIERARCHY';
 	var SET_LEAD = exports.SET_LEAD = 'SET_LEAD';
 	var SET_SUBGROUPS = exports.SET_SUBGROUPS = 'SET_SUBGROUPS';
+	
 	var SET_GROUPS = exports.SET_GROUPS = 'SET_GROUPS';
 	var SET_GROUP = exports.SET_GROUP = 'SET_GROUP';
 	var SET_MEMBERS = exports.SET_MEMBERS = 'SET_MEMBERS';
@@ -30597,15 +30611,109 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.getMembers = exports.getGroups = exports.setMembers = exports.setGroup = exports.setGroups = undefined;
+	
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var action = arguments[1];
+	
+	  var newState = Object.assign({}, state);
+	  switch (action.type) {
+	    case _constants.SET_GROUP:
+	      newState.name = action.groupName;
+	      break;
+	    case _constants.SET_GROUPS:
+	      newState.groups = action.groups;
+	      break;
+	    case _constants.SET_MEMBERS:
+	      newState.members = action.members;
+	      break;
+	    default:
+	      return state;
+	  }
+	  return newState;
+	};
+	
+	var _axios = __webpack_require__(253);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	var _constants = __webpack_require__(282);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var initialState = {
+	  name: '',
+	  groups: {},
+	  members: {}
+	};
+	
+	var setGroups = exports.setGroups = function setGroups(groups) {
+	  return {
+	    type: _constants.SET_GROUPS,
+	    groups: groups
+	  };
+	};
+	
+	var setGroup = exports.setGroup = function setGroup(groupName) {
+	  return {
+	    type: _constants.SET_GROUP,
+	    groupName: groupName
+	  };
+	};
+	
+	var setMembers = exports.setMembers = function setMembers(members) {
+	  return {
+	    type: _constants.SET_MEMBERS,
+	    members: members
+	  };
+	};
+	
+	var getGroups = exports.getGroups = function getGroups() {
+	  return function (dispatch) {
+	    _axios2.default.get('api/groups').then(function (groups) {
+	      dispatch(setGroups(groups.data));
+	    });
+	  };
+	};
+	
+	var getMembers = exports.getMembers = function getMembers(groupId) {
+	  return function (dispatch) {
+	    _axios2.default.get('api/persons/' + groupId).then(function (members) {
+	      dispatch(setMembers(members.data));
+	    });
+	  };
+	};
+	
+	/*
+	{
+	  name: 'Math Department'
+	  members{ key: personid, value- info 
+	    1 : {name, role}
+	    2 : ''
+	    3 : ''
+	  }
+	}
+	*/
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.logger = exports.defaults = undefined;
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _core = __webpack_require__(284);
+	var _core = __webpack_require__(285);
 	
-	var _helpers = __webpack_require__(285);
+	var _helpers = __webpack_require__(286);
 	
-	var _defaults = __webpack_require__(288);
+	var _defaults = __webpack_require__(289);
 	
 	var _defaults2 = _interopRequireDefault(_defaults);
 	
@@ -30727,7 +30835,7 @@
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30740,9 +30848,9 @@
 	
 	exports.printBuffer = printBuffer;
 	
-	var _helpers = __webpack_require__(285);
+	var _helpers = __webpack_require__(286);
 	
-	var _diff = __webpack_require__(286);
+	var _diff = __webpack_require__(287);
 	
 	var _diff2 = _interopRequireDefault(_diff);
 	
@@ -30873,7 +30981,7 @@
 	}
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -30897,7 +31005,7 @@
 	var timer = exports.timer = typeof performance !== "undefined" && performance !== null && typeof performance.now === "function" ? performance : Date;
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30907,7 +31015,7 @@
 	});
 	exports.default = diffLogger;
 	
-	var _deepDiff = __webpack_require__(287);
+	var _deepDiff = __webpack_require__(288);
 	
 	var _deepDiff2 = _interopRequireDefault(_deepDiff);
 	
@@ -30996,7 +31104,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -31425,7 +31533,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -31476,7 +31584,7 @@
 	module.exports = exports["default"];
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -31504,7 +31612,7 @@
 	exports['default'] = thunk;
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31530,7 +31638,7 @@
 
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31543,7 +31651,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _navbar = __webpack_require__(292);
+	var _navbar = __webpack_require__(293);
 	
 	var _navbar2 = _interopRequireDefault(_navbar);
 	
@@ -31575,7 +31683,7 @@
 	        {name !== '/' && <SubHeader img={'soulSearching.png'} text={'Blurring the line between dreams and reality'} />}*/
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31622,7 +31730,7 @@
 	exports.default = NavBar;
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31639,6 +31747,10 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _group = __webpack_require__(283);
+	
+	var _subGroup = __webpack_require__(252);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31648,10 +31760,30 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  return {};
+	  return {
+	    groups: state.main.groups,
+	    current: state.main.name,
+	    subGroups: state.sub.subGroups,
+	    hierarchy: state.sub.hierarchy,
+	    lead: state.sub.lead
+	  };
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {};
+	  return {
+	    getAllGroups: function getAllGroups() {
+	      dispatch((0, _group.getGroups)());
+	    },
+	    selectGroup: function selectGroup(groups, name) {
+	      if (!groups[name]) return;
+	      var id = groups[name].id;
+	      dispatch((0, _group.getMembers)(id));
+	      dispatch((0, _subGroup.getSubgroups)(id));
+	    },
+	    selectSubGroup: function selectSubGroup(id) {
+	      dispatch((0, _subGroup.getSubgroup)(id));
+	      dispatch((0, _subGroup.getHierarchy)(id));
+	    }
+	  };
 	};
 	
 	var HomeContainer = function (_Component) {
@@ -31664,9 +31796,40 @@
 	  }
 	
 	  _createClass(HomeContainer, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.getAllGroups();
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement('div', null);
+	      var _this2 = this;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          { onClick: function onClick() {
+	              return _this2.props.selectGroup(_this2.props.groups, "C College");
+	            } },
+	          ' subgroup yo '
+	        ),
+	        _react2.default.createElement(
+	          'h2',
+	          { onClick: function onClick() {
+	              return _this2.props.selectSubGroup(_this2.props.subGroups[0].id);
+	            } },
+	          ' subgroup 1 '
+	        ),
+	        _react2.default.createElement(
+	          'h2',
+	          { onClick: function onClick() {
+	              return _this2.props.selectSubGroup(_this2.props.subGroups[1].id);
+	            } },
+	          'sub group 2 '
+	        )
+	      );
 	    }
 	  }]);
 	

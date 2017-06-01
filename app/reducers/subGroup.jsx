@@ -57,6 +57,15 @@ export const setLead = (lead) => ({
    lead
  });
 
+export const getSubgroups = (groupId) => {
+  return (dispatch) => {
+    axios.get(`api/subgroups/${groupId}`)
+      .then(subgroups => {
+        dispatch(setSubgroups(subgroups.data))
+      })
+  }
+}
+
 export const getSubgroup = (id) => {
   return (dispatch) => {
     axios.get(`api/subgroup/${id}`)
@@ -70,6 +79,7 @@ export const getSubgroup = (id) => {
 export const getHierarchy = (groupId) => {
   return (dispatch) => {
     axios.get(`api/relationships/${groupId}`)
-      .then(subgroup => dispatch(setHierarchy(subgroup.data.hierarchy)));
+      .then(subgroup => dispatch(setHierarchy(subgroup.data)));
   };
 };
+

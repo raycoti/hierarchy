@@ -30,6 +30,7 @@ group_relations{
 Relationship.belongsTo(Group);*///belongstomany figure out how many to many works.
 Person.belongsToMany(SubGroup, {through: relationship});
 Person.belongsTo(Group);
+SubGroup.belongsTo(Group)
 
 //same as above 
 
