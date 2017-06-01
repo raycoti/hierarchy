@@ -64,11 +64,11 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(290);
+	var _Root = __webpack_require__(291);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
-	var _homeContainer = __webpack_require__(294);
+	var _homeContainer = __webpack_require__(293);
 	
 	var _homeContainer2 = _interopRequireDefault(_homeContainer);
 	
@@ -26902,15 +26902,15 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _reduxLogger = __webpack_require__(282);
+	var _reduxLogger = __webpack_require__(283);
 	
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 	
-	var _reduxThunk = __webpack_require__(288);
+	var _reduxThunk = __webpack_require__(289);
 	
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 	
-	var _reduxDevtoolsExtension = __webpack_require__(289);
+	var _reduxDevtoolsExtension = __webpack_require__(290);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -26936,14 +26936,14 @@
 	
 	var _redux = __webpack_require__(190);
 	
-	var _questions = __webpack_require__(252);
+	var _subGroup = __webpack_require__(252);
 	
-	var _questions2 = _interopRequireDefault(_questions);
+	var _subGroup2 = _interopRequireDefault(_subGroup);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = (0, _redux.combineReducers)({
-	  math: _questions2.default
+	  sub: _subGroup2.default
 	});
 
 /***/ }),
@@ -26955,29 +26955,25 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.getArt = exports.getProject = exports.getArts = exports.getProjects = exports.setArts = exports.setProjects = exports.setCurrent = exports.setAnswer = exports.setQuestion = undefined;
+	exports.getHierarchy = exports.getSubgroup = exports.setLead = exports.setHierarchy = exports.setSubgroup = exports.setSubgroups = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
 	  var action = arguments[1];
 	
 	  var newState = Object.assign({}, state);
-	
 	  switch (action.type) {
-	    case SET_ANSWER:
-	      newState.answer = action.answer;
+	    case _constants.SET_SUBGROUPS:
+	      newState.subGroups = action.subGroups;
 	      break;
-	    case SET_QUESTION:
-	      newState.question = action.question;
+	    case _constants.SET_SUBGROUP:
+	      newState.name = action.name;
 	      break;
-	    case SET_CURRENT:
-	      newState.current = action.current;
+	    case _constants.SET_HIERARCHY:
+	      newState.hierarchy = action.hierarchy; //object assign?;
 	      break;
-	    case SET_PROJECTS:
-	      newState.menu = action.menu;
-	      break;
-	    case SET_ARTS:
-	      newState.art = action.art;
+	    case _constants.SET_LEAD:
+	      newState.lead = action.lead;
 	      break;
 	    default:
 	      return state;
@@ -26989,91 +26985,66 @@
 	
 	var _axios2 = _interopRequireDefault(_axios);
 	
+	var _constants = __webpack_require__(282);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var SET_QUESTION = 'SET_QUESTION';
-	var SET_ANSWER = 'SET_ANSWER';
-	var SET_CURRENT = 'SET_CURRENT';
-	var SET_PROJECTS = 'SET_PROJECTS';
-	var SET_ARTS = 'SET_ARTS';
 	var initialState = {
-	  question: '1+1',
-	  current: {},
-	  answer: '2',
-	  type: 'multiple',
-	  skills: [{ des: 'Javascript, Node.js, React & Redux, CSS, HTML, Postgres', name: 'Development', img: 'bracket.png' }, { des: 'Drawings, Sprite Art, 3D Models. Photoshop, Maya 3D, ', name: 'Art', img: 'art.png' }, { des: 'Game development in Unity, Phaser, PlayCanvas', name: 'Games', img: 'controller.jpg' }, { des: 'Virtual Enviornments in Unity and PlayCanvas', name: 'Vr', img: 'vrr.png' }],
-	  menu: [],
-	  art: []
+	  name: '',
+	  lead: '',
+	  subGroups: [],
+	  hierarchy: {}
 	};
-	
-	/*[{name: 'Interactive Narrative', imageUrl: 'vr.png'},
-	   {name: 'KeyQuest', imageUrl: 'game4.png'},
-	   {name: 'Enviornment Generator', imageUrl: 'example.jpeg'},
-	   {name: 'Bubble Befuddle', imageUrl: 'bubble.jpg'},
-	   ]*/
-	var setQuestion = exports.setQuestion = function setQuestion(question) {
+	/*
+	{
+	  name: 'Math Department'
+	  lead: 'Professor algebra'
+	  hierarchy { key: personid, value childrenIds
+	    1 : '2,3'
+	    2 : ''
+	    3 : ''
+	  }
+	}
+	*/
+	var setSubgroups = exports.setSubgroups = function setSubgroups(subGroups) {
 	  return {
-	    type: SET_QUESTION,
-	    question: question
-	  };
-	};
-	var setAnswer = exports.setAnswer = function setAnswer(answer) {
-	  return {
-	    type: SET_ANSWER,
-	    answer: answer
-	  };
-	};
-	var setCurrent = exports.setCurrent = function setCurrent(project) {
-	  return {
-	    type: SET_CURRENT,
-	    current: project
+	    type: _constants.SET_SUBGROUPS,
+	    subGroups: subGroups
 	  };
 	};
 	
-	var setProjects = exports.setProjects = function setProjects(projects) {
+	var setSubgroup = exports.setSubgroup = function setSubgroup(name) {
 	  return {
-	    type: SET_PROJECTS,
-	    menu: projects
+	    type: _constants.SET_SUBGROUP,
+	    name: name
+	  };
+	};
+	var setHierarchy = exports.setHierarchy = function setHierarchy(hierarchy) {
+	  return {
+	    type: _constants.SET_HIERARCHY,
+	    hierarchy: hierarchy
+	  };
+	}; //this assumes we never have to add a person to the hierarchy....... if user desires to be able to add people to a hierarchy we would need to break this up into addUser to hierarchy/add parent/add child/remove child/parent.
+	var setLead = exports.setLead = function setLead(lead) {
+	  return {
+	    type: _constants.SET_LEAD,
+	    lead: lead
 	  };
 	};
 	
-	var setArts = exports.setArts = function setArts(arts) {
-	  return {
-	    type: SET_ARTS,
-	    art: arts
-	  };
-	};
-	
-	var getProjects = exports.getProjects = function getProjects() {
+	var getSubgroup = exports.getSubgroup = function getSubgroup(id) {
 	  return function (dispatch) {
-	    _axios2.default.get('/api/projects').then(function (result) {
-	
-	      dispatch(setProjects(result.data));
+	    _axios2.default.get('api/subgroup/' + id).then(function (subgroup) {
+	      dispatch(setSubgroup(subgroup.data.name));
+	      dispatch(setLead(subgroup.data.leadID));
 	    });
 	  };
 	};
 	
-	var getArts = exports.getArts = function getArts() {
+	var getHierarchy = exports.getHierarchy = function getHierarchy(groupId) {
 	  return function (dispatch) {
-	    _axios2.default.get('/api/arts').then(function (result) {
-	
-	      dispatch(setArts(result.data));
-	    });
-	  };
-	};
-	
-	var getProject = exports.getProject = function getProject(name) {
-	  return function (dispatch) {
-	    _axios2.default.get('/api/projects/' + name).then(function (result) {
-	      dispatch(setCurrent(result.data));
-	    });
-	  };
-	};
-	
-	var getArt = exports.getArt = function getArt(name) {
-	  return function (dispatch) {
-	    _axios2.default.get('/api/arts/' + name).then(function (result) {
-	      dispatch(setCurrent(result.data));
+	    _axios2.default.get('api/relationships/' + groupId).then(function (subgroup) {
+	      return dispatch(setHierarchy(subgroup.data.hierarchy));
 	    });
 	  };
 	};
@@ -30602,6 +30573,23 @@
 
 /***/ }),
 /* 282 */
+/***/ (function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var SET_SUBGROUP = exports.SET_SUBGROUP = 'SET_SUBGROUP';
+	var SET_HIERARCHY = exports.SET_HIERARCHY = 'SET_HIERARCHY';
+	var SET_LEAD = exports.SET_LEAD = 'SET_LEAD';
+	var SET_SUBGROUPS = exports.SET_SUBGROUPS = 'SET_SUBGROUPS';
+	var SET_GROUPS = exports.SET_GROUPS = 'SET_GROUPS';
+	var SET_GROUP = exports.SET_GROUP = 'SET_GROUP';
+	var SET_MEMBERS = exports.SET_MEMBERS = 'SET_MEMBERS';
+
+/***/ }),
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30613,11 +30601,11 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _core = __webpack_require__(283);
+	var _core = __webpack_require__(284);
 	
-	var _helpers = __webpack_require__(284);
+	var _helpers = __webpack_require__(285);
 	
-	var _defaults = __webpack_require__(287);
+	var _defaults = __webpack_require__(288);
 	
 	var _defaults2 = _interopRequireDefault(_defaults);
 	
@@ -30739,7 +30727,7 @@
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30752,9 +30740,9 @@
 	
 	exports.printBuffer = printBuffer;
 	
-	var _helpers = __webpack_require__(284);
+	var _helpers = __webpack_require__(285);
 	
-	var _diff = __webpack_require__(285);
+	var _diff = __webpack_require__(286);
 	
 	var _diff2 = _interopRequireDefault(_diff);
 	
@@ -30885,7 +30873,7 @@
 	}
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -30909,7 +30897,7 @@
 	var timer = exports.timer = typeof performance !== "undefined" && performance !== null && typeof performance.now === "function" ? performance : Date;
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30919,7 +30907,7 @@
 	});
 	exports.default = diffLogger;
 	
-	var _deepDiff = __webpack_require__(286);
+	var _deepDiff = __webpack_require__(287);
 	
 	var _deepDiff2 = _interopRequireDefault(_deepDiff);
 	
@@ -31008,7 +30996,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -31437,7 +31425,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -31488,7 +31476,7 @@
 	module.exports = exports["default"];
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -31516,7 +31504,7 @@
 	exports['default'] = thunk;
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31542,7 +31530,7 @@
 
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31555,13 +31543,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _navbar = __webpack_require__(291);
+	var _navbar = __webpack_require__(292);
 	
 	var _navbar2 = _interopRequireDefault(_navbar);
-	
-	var _subheaderContainer = __webpack_require__(292);
-	
-	var _subheaderContainer2 = _interopRequireDefault(_subheaderContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31574,7 +31558,6 @@
 	    'div',
 	    null,
 	    _react2.default.createElement('nav', { className: 'navbar Head navbar-toggleable-md navbar-light bg-faded' }),
-	    _react2.default.createElement(_subheaderContainer2.default, { thePath: location.pathname }),
 	    _react2.default.createElement(
 	      'div',
 	      { className: 'container-fluid' },
@@ -31592,7 +31575,7 @@
 	        {name !== '/' && <SubHeader img={'soulSearching.png'} text={'Blurring the line between dreams and reality'} />}*/
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31631,128 +31614,12 @@
 	            { exact: true, to: '/', activeClassName: 'active' },
 	            'HOME'
 	          )
-	        ),
-	        _react2.default.createElement(
-	          'li',
-	          { className: 'theNav' },
-	          _react2.default.createElement(
-	            _reactRouterDom.NavLink,
-	            { to: '/contact', activeClassName: 'active' },
-	            'CONTACT'
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'li',
-	          { className: 'theNav' },
-	          _react2.default.createElement(
-	            _reactRouterDom.NavLink,
-	            { to: '/art', activeClassName: 'active' },
-	            'ART'
-	          )
 	        )
 	      )
 	    )
 	  );
 	};
 	exports.default = NavBar;
-
-/***/ }),
-/* 292 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _reactRedux = __webpack_require__(182);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _subheader = __webpack_require__(293);
-	
-	var _subheader2 = _interopRequireDefault(_subheader);
-	
-	var _questions = __webpack_require__(252);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    current: state.math.current,
-	    menu: state.math.menu,
-	    art: state.math.art
-	  };
-	};
-	
-	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {
-	    getProjects: function getProjects() {
-	      dispatch((0, _questions.getProjects)());
-	    },
-	    getArt: function getArt() {
-	      dispatch((0, _questions.getArts)());
-	    }
-	  };
-	};
-	
-	var SubheaderContainer = function (_Component) {
-	  _inherits(SubheaderContainer, _Component);
-	
-	  function SubheaderContainer() {
-	    _classCallCheck(this, SubheaderContainer);
-	
-	    return _possibleConstructorReturn(this, (SubheaderContainer.__proto__ || Object.getPrototypeOf(SubheaderContainer)).call(this));
-	  }
-	
-	  _createClass(SubheaderContainer, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      if (!this.props.menu.length) {
-	        this.props.getProjects();
-	      }
-	      if (!this.props.art.length) {
-	        this.props.getArt();
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var title = void 0,
-	          image = void 0;
-	      var extra = false;
-	      title = this.props.current.name || '';
-	      image = this.props.current.imageUrl || 'loading.png';
-	      if (image !== 'soulSearching.png') {
-	        extra = true;
-	      }
-	      var divStyle = {
-	        backgroundImage: 'url(/images/' + image + ')'
-	      };
-	
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'parallax', style: divStyle },
-	        _react2.default.createElement(_subheader2.default, { text: title, img: image, other: extra })
-	      );
-	    }
-	  }]);
-	
-	  return SubheaderContainer;
-	}(_react.Component);
-	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SubheaderContainer);
 
 /***/ }),
 /* 293 */
@@ -31764,46 +31631,6 @@
 	  value: true
 	});
 	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var SubHeader = function SubHeader(_ref) {
-	  var text = _ref.text,
-	      img = _ref.img,
-	      other = _ref.other;
-	
-	  var extraStyle = '';
-	  if (other) extraStyle = 'extra';
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'hovereffect headImg' },
-	    _react2.default.createElement(
-	      'div',
-	      { className: 'overlay', height: '100%' },
-	      _react2.default.createElement(
-	        'h3',
-	        { className: extraStyle + 'info2 ' },
-	        text
-	      )
-	    )
-	  );
-	};
-	
-	exports.default = SubHeader;
-
-/***/ }),
-/* 294 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _reactRedux = __webpack_require__(182);
@@ -31811,18 +31638,6 @@
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouterDom = __webpack_require__(214);
-	
-	var _display = __webpack_require__(295);
-	
-	var _display2 = _interopRequireDefault(_display);
-	
-	var _questions = __webpack_require__(252);
-	
-	var _skills = __webpack_require__(296);
-	
-	var _skills2 = _interopRequireDefault(_skills);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31833,22 +31648,10 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    question: state.math.question
-	  };
+	  return {};
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {
-	    nextQuestion: function nextQuestion() {
-	      dispatch((0, _questions.setQuestion)('2 + 2'));
-	    },
-	    setCurrent: function setCurrent() {
-	      dispatch((0, _questions.setCurrent)({
-	        name: "Blurring the line between dreams and reality",
-	        imageUrl: 'soulSearching.png'
-	      }));
-	    }
-	  };
+	  return {};
 	};
 	
 	var HomeContainer = function (_Component) {
@@ -31857,42 +31660,13 @@
 	  function HomeContainer() {
 	    _classCallCheck(this, HomeContainer);
 	
-	    //change handler
-	    //for input form
-	    var _this = _possibleConstructorReturn(this, (HomeContainer.__proto__ || Object.getPrototypeOf(HomeContainer)).call(this));
-	
-	    _this.handleClick = _this.handleClick.bind(_this);
-	    return _this;
+	    return _possibleConstructorReturn(this, (HomeContainer.__proto__ || Object.getPrototypeOf(HomeContainer)).call(this));
 	  }
 	
 	  _createClass(HomeContainer, [{
-	    key: 'handleClick',
-	    value: function handleClick(e) {
-	      //console.log('clicked',e.target.value);
-	    }
-	  }, {
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.props.setCurrent();
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'container-fluid projects' },
-	        _react2.default.createElement(
-	          'p',
-	          { className: 'subtext' },
-	          'Just a Kid from Chicago who loves technology'
-	        ),
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'projects'
-	        ),
-	        _react2.default.createElement(_display2.default, { theType: 'projects', menu: this.props.menu })
-	      );
+	      return _react2.default.createElement('div', null);
 	    }
 	  }]);
 	
@@ -31900,116 +31674,6 @@
 	}(_react.Component);
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(HomeContainer);
-
-/***/ }),
-/* 295 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouterDom = __webpack_require__(214);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Display = function Display(_ref) {
-	  var menu = _ref.menu,
-	      theType = _ref.theType;
-	
-	  //text and image will be passed down
-	  //from props 
-	  return _react2.default.createElement(
-	    'div',
-	    { name: 'projects', className: 'row' },
-	    menu.map(function (item, ind) {
-	      return _react2.default.createElement(
-	        'div',
-	        { key: item.id, className: 'col-md-6' },
-	        _react2.default.createElement(
-	          _reactRouterDom.Link,
-	          { to: '/' + theType + '/' + item.name },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'hovereffect thumbnail ' },
-	            _react2.default.createElement('img', { className: 'img-thumbnail image2 headImg ', width: '100%', src: '/images/' + item.imageUrl, alt: '' }),
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'overlay2', height: '100%' },
-	              _react2.default.createElement(
-	                'h3',
-	                { className: 'text2' },
-	                item.name
-	              )
-	            )
-	          )
-	        )
-	      );
-	    })
-	  );
-	};
-	
-	exports.default = Display;
-
-/***/ }),
-/* 296 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Skills = function Skills(_ref) {
-	  var skills = _ref.skills;
-	
-	  //text and image will be passed down
-	  //from props 
-	  return _react2.default.createElement(
-	    "div",
-	    { className: "row galrow" },
-	    skills.map(function (item, ind) {
-	      return _react2.default.createElement(
-	        "div",
-	        { key: ind, className: "col-md-3 col-xs-6 gal" },
-	        _react2.default.createElement(
-	          "div",
-	          { className: "thumbnail" },
-	          _react2.default.createElement("img", { src: "images/" + item.img, className: "img-thumbnail iconimg" }),
-	          _react2.default.createElement(
-	            "div",
-	            { className: "caption" },
-	            _react2.default.createElement(
-	              "h4",
-	              { className: "cap" },
-	              item.name
-	            ),
-	            _react2.default.createElement(
-	              "p",
-	              { className: "cap" },
-	              item.des
-	            )
-	          )
-	        )
-	      );
-	    })
-	  );
-	};
-	
-	exports.default = Skills;
 
 /***/ })
 /******/ ]);

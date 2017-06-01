@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import mathReducer from './questions';
+import subGroup from './subGroup';
 export default combineReducers({
-  math: mathReducer,
+  sub: subGroup,
 })

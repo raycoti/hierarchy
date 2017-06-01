@@ -8,8 +8,6 @@ const NavBar = function({thePath}){
           <div id="navigation" className="col-md-12 thenav">
             <ul>
               <li className="theNav"><NavLink exact to="/" activeClassName="active">HOME</NavLink></li>
-            <li className="theNav"><NavLink to="/contact" activeClassName="active">CONTACT</NavLink></li>
-            <li className="theNav"><NavLink to="/art" activeClassName="active">ART</NavLink></li>
             </ul>
           </div>
       </nav>

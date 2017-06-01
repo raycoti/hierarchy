@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import NavBar from './navbar'
-import SubHeaderContainer from '../containers/subheaderContainer'
 const Root = function({children,location}) {
   const name=location.pathname;
     return (
       <div>
         <nav className="navbar Head navbar-toggleable-md navbar-light bg-faded"> 
         </nav>
-          <SubHeaderContainer thePath={location.pathname} />
         <div className="container-fluid">
           <NavBar thePath={location.pathname} />
           {children}
