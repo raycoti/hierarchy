@@ -26972,7 +26972,7 @@
 	      newState.subGroups = action.subGroups;
 	      break;
 	    case _constants.SET_SUBGROUP:
-	      newState.name = action.name;
+	      newState.id = action.id;
 	      break;
 	    case _constants.SET_HIERARCHY:
 	      newState.hierarchy = action.hierarchy; //object assign?;
@@ -26995,7 +26995,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var initialState = {
-	  name: '',
+	  id: -1,
 	  lead: '',
 	  subGroups: [],
 	  hierarchy: {}
@@ -27018,10 +27018,10 @@
 	  };
 	};
 	
-	var setSubgroup = exports.setSubgroup = function setSubgroup(name) {
+	var setSubgroup = exports.setSubgroup = function setSubgroup(id) {
 	  return {
 	    type: _constants.SET_SUBGROUP,
-	    name: name
+	    id: id
 	  };
 	};
 	var setHierarchy = exports.setHierarchy = function setHierarchy(hierarchy) {
@@ -27048,7 +27048,7 @@
 	var getSubgroup = exports.getSubgroup = function getSubgroup(id) {
 	  return function (dispatch) {
 	    _axios2.default.get('api/subgroup/' + id).then(function (subgroup) {
-	      dispatch(setSubgroup(subgroup.data.name));
+	      dispatch(setSubgroup(id));
 	      dispatch(setLead(subgroup.data.leadID));
 	    });
 	  };
@@ -31751,6 +31751,14 @@
 	
 	var _subGroup = __webpack_require__(252);
 	
+	var _searchContainer = __webpack_require__(295);
+	
+	var _searchContainer2 = _interopRequireDefault(_searchContainer);
+	
+	var _membersContainer = __webpack_require__(297);
+	
+	var _membersContainer2 = _interopRequireDefault(_membersContainer);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31763,9 +31771,7 @@
 	  return {
 	    groups: state.main.groups,
 	    current: state.main.name,
-	    subGroups: state.sub.subGroups,
-	    hierarchy: state.sub.hierarchy,
-	    lead: state.sub.lead
+	    subGroups: state.sub.subGroups
 	  };
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -31778,6 +31784,8 @@
 	      var id = groups[name].id;
 	      dispatch((0, _group.getMembers)(id));
 	      dispatch((0, _subGroup.getSubgroups)(id));
+	      dispatch((0, _group.setGroup)(name));
+	      //render out stuff
 	    },
 	    selectSubGroup: function selectSubGroup(id) {
 	      dispatch((0, _subGroup.getSubgroup)(id));
@@ -31798,37 +31806,16 @@
 	  _createClass(HomeContainer, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.props.getAllGroups();
+	      this.props.getAllGroups(); //the only dispatch that should stay
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          { onClick: function onClick() {
-	              return _this2.props.selectGroup(_this2.props.groups, "C College");
-	            } },
-	          ' subgroup yo '
-	        ),
-	        _react2.default.createElement(
-	          'h2',
-	          { onClick: function onClick() {
-	              return _this2.props.selectSubGroup(_this2.props.subGroups[0].id);
-	            } },
-	          ' subgroup 1 '
-	        ),
-	        _react2.default.createElement(
-	          'h2',
-	          { onClick: function onClick() {
-	              return _this2.props.selectSubGroup(_this2.props.subGroups[1].id);
-	            } },
-	          'sub group 2 '
-	        )
+	        _react2.default.createElement(_searchContainer2.default, null),
+	        _react2.default.createElement(_membersContainer2.default, null)
 	      );
 	    }
 	  }]);
@@ -31837,6 +31824,297 @@
 	}(_react.Component);
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(HomeContainer);
+
+/***/ }),
+/* 295 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _reactRedux = __webpack_require__(182);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _group = __webpack_require__(283);
+	
+	var _subGroup = __webpack_require__(252);
+	
+	var _search = __webpack_require__(296);
+	
+	var _search2 = _interopRequireDefault(_search);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	//import People from '../components/people';
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    groups: state.main.groups,
+	    current: state.main.id,
+	    subGroups: state.sub.subGroups,
+	    subGroup: state.sub.id
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    selectGroup: function selectGroup(id, name) {
+	      dispatch((0, _group.getMembers)(id));
+	      dispatch((0, _subGroup.getSubgroups)(id));
+	      dispatch((0, _group.setGroup)(name));
+	    },
+	    selectSubGroup: function selectSubGroup(id) {
+	      dispatch((0, _subGroup.getSubgroup)(id));
+	      dispatch((0, _subGroup.getHierarchy)(id));
+	    }
+	  };
+	};
+	
+	var SearchContainer = function (_Component) {
+	  _inherits(SearchContainer, _Component);
+	
+	  function SearchContainer() {
+	    _classCallCheck(this, SearchContainer);
+	
+	    var _this = _possibleConstructorReturn(this, (SearchContainer.__proto__ || Object.getPrototypeOf(SearchContainer)).call(this));
+	
+	    _this.onChange = _this.onChange.bind(_this);
+	    _this.subChange = _this.subChange.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(SearchContainer, [{
+	    key: 'onChange',
+	    value: function onChange(e) {
+	      var name = e.target.value;
+	      if (!this.props.groups[name]) return;
+	      if (this.props.current === name) return;
+	      var id = this.props.groups[name].id;
+	      this.props.selectGroup(id, name);
+	    }
+	  }, {
+	    key: 'subChange',
+	    value: function subChange(e) {
+	      var id = e.target.value;
+	      if (id === 'default') return;
+	      if (this.props.subGroup === id) return;
+	      this.props.selectSubGroup(id);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(_search2.default, { subChange: this.subChange, onChange: this.onChange });
+	    }
+	  }]);
+	
+	  return SearchContainer;
+	}(_react.Component);
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SearchContainer);
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(182);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    groups: state.main.groups,
+	    subGroups: state.sub.subGroups
+	  };
+	};
+	
+	var Search = function Search(_ref) {
+	  var groups = _ref.groups,
+	      subGroups = _ref.subGroups,
+	      _onChange = _ref.onChange,
+	      subChange = _ref.subChange;
+	
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'li',
+	      null,
+	      _react2.default.createElement(
+	        'select',
+	        { onChange: function onChange(e) {
+	            _onChange(e);
+	          }, className: 'btn btn-default btn-select' },
+	        _react2.default.createElement(
+	          'option',
+	          { value: 'default' },
+	          'Select Institution'
+	        ),
+	        Object.keys(groups).map(function (name) {
+	          return _react2.default.createElement(
+	            'option',
+	            { key: groups[name].id, value: name },
+	            name.toUpperCase()
+	          );
+	        })
+	      ),
+	      _react2.default.createElement(
+	        'select',
+	        { onChange: function onChange(e) {
+	            subChange(e);
+	          }, className: 'btn btn-default btn-select' },
+	        _react2.default.createElement(
+	          'option',
+	          { value: 'default' },
+	          'Select Committie'
+	        ),
+	        subGroups.map(function (subGroup) {
+	          return _react2.default.createElement(
+	            'option',
+	            { key: subGroup.id, value: subGroup.id },
+	            subGroup.name.toUpperCase()
+	          );
+	        })
+	      )
+	    )
+	  );
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(Search);
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(182);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _members = __webpack_require__(298);
+	
+	var _members2 = _interopRequireDefault(_members);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    members: state.main.members,
+	    hierarchy: state.sub.hierarchy,
+	    lead: state.sub.lead
+	  };
+	}; // 
+	//
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(_members2.default);
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _member = __webpack_require__(299);
+	
+	var _member2 = _interopRequireDefault(_member);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Members = function Members(_ref) {
+	  var members = _ref.members,
+	      hierarchy = _ref.hierarchy;
+	
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'h1',
+	      null,
+	      'Members'
+	    ),
+	    Object.keys(members).map(function (id) {
+	      return _react2.default.createElement(_member2.default, { name: members[id].name, role: hierarchy[id] });
+	    })
+	  );
+	};
+	
+	exports.default = Members;
+
+/***/ }),
+/* 299 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Member = function Member(_ref) {
+	  var role = _ref.role,
+	      name = _ref.name;
+	
+	  var theRole = '';
+	  if (role) theRole = role.role;
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'h4',
+	      null,
+	      name
+	    ),
+	    _react2.default.createElement(
+	      'p',
+	      null,
+	      theRole
+	    )
+	  );
+	};
+	
+	exports.default = Member;
 
 /***/ })
 /******/ ]);
