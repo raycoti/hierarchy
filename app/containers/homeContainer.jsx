@@ -1,15 +1,14 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
-import {getGroups, getMembers} from '../reducers/group';
+import {getGroups, getMembers, setGroup} from '../reducers/group';
 import {getSubgroup, getHierarchy, getSubgroups} from '../reducers/subGroup';
-
+import SearchContainer from './searchContainer';
+import MembersContainer from './membersContainer';
 const mapStateToProps = (state) => {
   return {
     groups: state.main.groups,
     current: state.main.name,
     subGroups: state.sub.subGroups,
-    hierarchy: state.sub.hierarchy,
-    lead: state.sub.lead
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -22,6 +21,8 @@ const mapDispatchToProps = (dispatch) => {
       const id = groups[name].id;
       dispatch(getMembers(id))
       dispatch(getSubgroups(id))
+      dispatch(setGroup(name))
+      //render out stuff
     },
     selectSubGroup(id){
       dispatch(getSubgroup(id))
@@ -36,14 +37,13 @@ class HomeContainer extends Component {
     super()
   }
   componentWillMount(){
-    this.props.getAllGroups()
+    this.props.getAllGroups() //the only dispatch that should stay
   }
   render(){
     return (
       <div >
-        <h1 onClick={()=>this.props.selectGroup(this.props.groups,"C College")}> subgroup yo </h1>
-        <h2 onClick={()=>this.props.selectSubGroup(this.props.subGroups[0].id)} > subgroup 1 </h2>
-        <h2 onClick={()=>this.props.selectSubGroup(this.props.subGroups[1].id)} >sub group 2 </h2>
+        <SearchContainer />
+        <MembersContainer />
       </div>
     )
   }

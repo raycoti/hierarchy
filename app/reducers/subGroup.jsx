@@ -2,7 +2,7 @@ import axios from 'axios';
 import {SET_SUBGROUP, SET_HIERARCHY, SET_LEAD, SET_SUBGROUPS} from '../constants';
 
 const initialState = {
-  name: '',
+  id: -1,
   lead: '',
   subGroups: [],
   hierarchy: {}
@@ -25,7 +25,7 @@ export default function(state = initialState, action){
       newState.subGroups = action.subGroups;
       break;
     case SET_SUBGROUP:
-      newState.name = action.name;
+      newState.id = action.id;
       break;
     case SET_HIERARCHY:
       newState.hierarchy = action.hierarchy;//object assign?;
@@ -44,9 +44,9 @@ export const setSubgroups = (subGroups) => ({
   subGroups
 });
 
-export const setSubgroup = (name) => ({
+export const setSubgroup = (id) => ({
   type: SET_SUBGROUP,
-  name
+  id
 });
 export const setHierarchy = (hierarchy) => ({
   type: SET_HIERARCHY,
@@ -70,7 +70,7 @@ export const getSubgroup = (id) => {
   return (dispatch) => {
     axios.get(`api/subgroup/${id}`)
       .then(subgroup => {
-        dispatch(setSubgroup(subgroup.data.name));
+        dispatch(setSubgroup(id));
         dispatch(setLead(subgroup.data.leadID));
       });
   };
