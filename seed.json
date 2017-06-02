@@ -5,6 +5,11 @@
       "id": "1",      
       "name": "C College",
       "description": ""
+    },
+    {
+      "id": "2",      
+      "name": "School",
+      "description": ""
     }
   ],
   "subGroups":
@@ -22,6 +27,20 @@
       "description": "",
       "leadID": "1",
       "groupId": "1"
+    },
+    {
+      "id": "3",
+      "name": "Book Club",
+      "description": "",
+      "leadID": "4",
+      "groupId": "2"
+      },
+      {
+      "id": "4",
+      "name": "Yearbook",
+      "description": "",
+      "leadID": "5",
+      "groupId": "2"
     }
   ],
   "persons":
@@ -40,12 +59,24 @@
       "groupId": "1"
       
     },
-     
     {
       "id": "3",
       "name": "Prof Discrete",
       "description": "",
       "groupId": "1"
+    },
+     {
+        "id": "4",
+      "name": "Student 1",
+      "description": "",
+      "groupId": "2"
+      
+    },
+    {
+      "id": "5",
+      "name": "Student 2",
+      "description": "",
+      "groupId": "2"
     }
   ],
    "relationships":
@@ -91,6 +122,34 @@
       "children": "",
       "subGroupId":"2",
       "personId": "3"
+    },
+     {
+      "role": "Leader",
+      "description": "",
+      "children": "5",
+      "subGroupId":"3",
+      "personId": "4" 
+      },
+      {
+      "role": "Treasurer",
+      "description": "",
+      "children": "",
+      "subGroupId":"3",
+      "personId": "5"
+    },
+    {
+      "role": "Leader",
+      "description": "",
+      "children": "4",
+      "subGroupId":"4",
+      "personId": "5" 
+      },
+      {
+      "role": "Treasurer",
+      "description": "",
+      "children": "",
+      "subGroupId":"4",
+      "personId": "4"
     }
   ]
 }

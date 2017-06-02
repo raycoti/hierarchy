@@ -5,6 +5,7 @@ const initialState = {
   id: -1,
   lead: '',
   subGroups: [],
+  //members: {} ?
   hierarchy: {}
 };
 /*
