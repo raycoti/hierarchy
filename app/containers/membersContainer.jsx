@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
     members: state.main.members,
     hierarchy: state.sub.hierarchy,
     lead: state.sub.lead,
+    positions: state.main.positions,
   }
 }
 

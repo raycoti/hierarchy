@@ -5,6 +5,7 @@ const initialState = {
   id: -1,
   lead: '',
   subGroups: [],
+  //members: {} ?
   hierarchy: {}
 };
 /*
@@ -28,7 +29,7 @@ export default function(state = initialState, action){
       newState.id = action.id;
       break;
     case SET_HIERARCHY:
-      newState.hierarchy = action.hierarchy;//object assign?;
+      newState.hierarchy = action.hierarchy;
       break;
     case SET_LEAD:
       newState.lead = action.lead;
