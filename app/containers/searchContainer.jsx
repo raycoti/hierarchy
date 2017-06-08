@@ -10,6 +10,7 @@ const mapStateToProps = (state) => {
     current: state.main.id,
     subGroups: state.sub.subGroups,
     subGroup: state.sub.id,
+    lead: state.sub.lead,
   }
 }
 
@@ -40,12 +41,16 @@ class SearchContainer extends Component {
     if(this.props.current===name) return;
     const id = this.props.groups[name].id;
     this.props.selectGroup(id,name);
+    //TODO clear canvas when switches members
+
   }
+  
   subChange(e){
      const id = e.target.value;
      if(id==='default') return;
      if(this.props.subGroup===id) return;
      this.props.selectSubGroup(id);
+    //clear text when switches
   }
   render(){
     return(

@@ -64,11 +64,11 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(292);
+	var _Root = __webpack_require__(293);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
-	var _homeContainer = __webpack_require__(294);
+	var _homeContainer = __webpack_require__(295);
 	
 	var _homeContainer2 = _interopRequireDefault(_homeContainer);
 	
@@ -26902,15 +26902,15 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _reduxLogger = __webpack_require__(284);
+	var _reduxLogger = __webpack_require__(285);
 	
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 	
-	var _reduxThunk = __webpack_require__(290);
+	var _reduxThunk = __webpack_require__(291);
 	
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 	
-	var _reduxDevtoolsExtension = __webpack_require__(291);
+	var _reduxDevtoolsExtension = __webpack_require__(292);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -26944,11 +26944,16 @@
 	
 	var _group2 = _interopRequireDefault(_group);
 	
+	var _canvas = __webpack_require__(284);
+	
+	var _canvas2 = _interopRequireDefault(_canvas);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.default = (0, _redux.combineReducers)({
 	  sub: _subGroup2.default,
-	  main: _group2.default
+	  main: _group2.default,
+	  canvas: _canvas2.default
 	});
 
 /***/ }),
@@ -26975,7 +26980,7 @@
 	      newState.id = action.id;
 	      break;
 	    case _constants.SET_HIERARCHY:
-	      newState.hierarchy = action.hierarchy; //object assign?;
+	      newState.hierarchy = action.hierarchy;
 	      break;
 	    case _constants.SET_LEAD:
 	      newState.lead = action.lead;
@@ -30602,6 +30607,12 @@
 	var SET_GROUPS = exports.SET_GROUPS = 'SET_GROUPS';
 	var SET_GROUP = exports.SET_GROUP = 'SET_GROUP';
 	var SET_MEMBERS = exports.SET_MEMBERS = 'SET_MEMBERS';
+	
+	var SET_POSITIONS = exports.SET_POSITIONS = 'SET_POSITIONS';
+	var CHANGE_POSITION = exports.CHANGE_POSITION = 'CHANGE_POSITION';
+	
+	var SET_TEXT = exports.SET_TEXT = 'SET_TEXT';
+	var SET_COOR = exports.SET_COOR = 'SET_COOR';
 
 /***/ }),
 /* 283 */
@@ -30612,7 +30623,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.getMembers = exports.getGroups = exports.setMembers = exports.setGroup = exports.setGroups = undefined;
+	exports.getMembers = exports.getGroups = exports.setPosition = exports.setPositions = exports.setMembers = exports.setGroup = exports.setGroups = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -30628,6 +30639,13 @@
 	      break;
 	    case _constants.SET_MEMBERS:
 	      newState.members = action.members;
+	      break;
+	    case _constants.SET_POSITIONS:
+	      newState.positions = action.positions;
+	      break;
+	    case _constants.CHANGE_POSITION:
+	      newState.positions = Object.assign({}, newState.positions); //need to nest each level of the object
+	      newState.positions[action.id] = Object.assign({}, action.position);
 	      break;
 	    default:
 	      return state;
@@ -30646,8 +30664,16 @@
 	var initialState = {
 	  name: '',
 	  groups: {},
+	  positions: {},
 	  members: {}
 	};
+	
+	/*
+	member: {x:,
+	  y:,
+	  des:
+	  name:}}
+	*/
 	
 	var setGroups = exports.setGroups = function setGroups(groups) {
 	  return {
@@ -30670,6 +30696,21 @@
 	  };
 	};
 	
+	var setPositions = exports.setPositions = function setPositions(positions) {
+	  return {
+	    type: _constants.SET_POSITIONS,
+	    positions: positions
+	  };
+	};
+	
+	var setPosition = exports.setPosition = function setPosition(id, position) {
+	  return {
+	    type: _constants.CHANGE_POSITION,
+	    id: id,
+	    position: position
+	  };
+	};
+	
 	var getGroups = exports.getGroups = function getGroups() {
 	  return function (dispatch) {
 	    _axios2.default.get('api/groups').then(function (groups) {
@@ -30682,7 +30723,18 @@
 	  return function (dispatch) {
 	    _axios2.default.get('api/persons/' + groupId).then(function (members) {
 	      dispatch(setMembers(members.data));
+	      dispatch(createPositions(members.data));
 	    });
+	  };
+	};
+	
+	var createPositions = function createPositions(members) {
+	  return function (dispatch) {
+	    var positions = Object.keys(members).reduce(function (acc, cur) {
+	      acc[cur] = { x: 0, y: 0 };
+	      return acc;
+	    }, {});
+	    dispatch(setPositions(positions));
 	  };
 	};
 	
@@ -30706,15 +30758,70 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.setCoor = exports.setText = undefined;
+	
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var action = arguments[1];
+	
+	  var newState = Object.assign({}, state);
+	  switch (action.type) {
+	    case _constants.SET_TEXT:
+	      newState.info = action.info;
+	      break;
+	    case _constants.SET_COOR:
+	      newState.x = action.x;
+	      newState.y = action.y;
+	      break;
+	    default:
+	      return state;
+	  }
+	  return newState;
+	};
+	
+	var _constants = __webpack_require__(282);
+	
+	var initialState = {
+	  info: '',
+	  x: -1000,
+	  y: -10
+	};
+	
+	var setText = exports.setText = function setText(info) {
+	  return {
+	    type: _constants.SET_TEXT,
+	    info: info
+	  };
+	};
+	
+	var setCoor = exports.setCoor = function setCoor(x, y) {
+	  return {
+	    type: _constants.SET_COOR,
+	    x: x,
+	    y: y
+	  };
+	};
+	
+	//placeholder
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.logger = exports.defaults = undefined;
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _core = __webpack_require__(285);
+	var _core = __webpack_require__(286);
 	
-	var _helpers = __webpack_require__(286);
+	var _helpers = __webpack_require__(287);
 	
-	var _defaults = __webpack_require__(289);
+	var _defaults = __webpack_require__(290);
 	
 	var _defaults2 = _interopRequireDefault(_defaults);
 	
@@ -30836,7 +30943,7 @@
 
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30849,9 +30956,9 @@
 	
 	exports.printBuffer = printBuffer;
 	
-	var _helpers = __webpack_require__(286);
+	var _helpers = __webpack_require__(287);
 	
-	var _diff = __webpack_require__(287);
+	var _diff = __webpack_require__(288);
 	
 	var _diff2 = _interopRequireDefault(_diff);
 	
@@ -30982,7 +31089,7 @@
 	}
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -31006,7 +31113,7 @@
 	var timer = exports.timer = typeof performance !== "undefined" && performance !== null && typeof performance.now === "function" ? performance : Date;
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31016,7 +31123,7 @@
 	});
 	exports.default = diffLogger;
 	
-	var _deepDiff = __webpack_require__(288);
+	var _deepDiff = __webpack_require__(289);
 	
 	var _deepDiff2 = _interopRequireDefault(_deepDiff);
 	
@@ -31105,7 +31212,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -31534,7 +31641,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -31585,7 +31692,7 @@
 	module.exports = exports["default"];
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -31613,7 +31720,7 @@
 	exports['default'] = thunk;
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31639,7 +31746,7 @@
 
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31652,7 +31759,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _navbar = __webpack_require__(293);
+	var _navbar = __webpack_require__(294);
 	
 	var _navbar2 = _interopRequireDefault(_navbar);
 	
@@ -31684,7 +31791,7 @@
 	        {name !== '/' && <SubHeader img={'soulSearching.png'} text={'Blurring the line between dreams and reality'} />}*/
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31731,7 +31838,7 @@
 	exports.default = NavBar;
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31752,11 +31859,11 @@
 	
 	var _subGroup = __webpack_require__(252);
 	
-	var _searchContainer = __webpack_require__(295);
+	var _searchContainer = __webpack_require__(296);
 	
 	var _searchContainer2 = _interopRequireDefault(_searchContainer);
 	
-	var _membersContainer = __webpack_require__(297);
+	var _membersContainer = __webpack_require__(298);
 	
 	var _membersContainer2 = _interopRequireDefault(_membersContainer);
 	
@@ -31827,7 +31934,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(HomeContainer);
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31848,7 +31955,7 @@
 	
 	var _subGroup = __webpack_require__(252);
 	
-	var _search = __webpack_require__(296);
+	var _search = __webpack_require__(297);
 	
 	var _search2 = _interopRequireDefault(_search);
 	
@@ -31866,7 +31973,8 @@
 	    groups: state.main.groups,
 	    current: state.main.id,
 	    subGroups: state.sub.subGroups,
-	    subGroup: state.sub.id
+	    subGroup: state.sub.id,
+	    lead: state.sub.lead
 	  };
 	};
 	
@@ -31905,6 +32013,7 @@
 	      if (this.props.current === name) return;
 	      var id = this.props.groups[name].id;
 	      this.props.selectGroup(id, name);
+	      //TODO clear canvas when switches members
 	    }
 	  }, {
 	    key: 'subChange',
@@ -31913,6 +32022,7 @@
 	      if (id === 'default') return;
 	      if (this.props.subGroup === id) return;
 	      this.props.selectSubGroup(id);
+	      //clear text when switches
 	    }
 	  }, {
 	    key: 'render',
@@ -31927,7 +32037,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SearchContainer);
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32006,7 +32116,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(Search);
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32021,7 +32131,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _members = __webpack_require__(298);
+	var _members = __webpack_require__(299);
 	
 	var _members2 = _interopRequireDefault(_members);
 	
@@ -32031,14 +32141,15 @@
 	  return {
 	    members: state.main.members,
 	    hierarchy: state.sub.hierarchy,
-	    lead: state.sub.lead
+	    lead: state.sub.lead,
+	    positions: state.main.positions
 	  };
 	}; // 
 	//
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(_members2.default);
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32051,20 +32162,30 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _member = __webpack_require__(299);
+	var _member = __webpack_require__(300);
 	
 	var _member2 = _interopRequireDefault(_member);
 	
-	var _reactKonva = __webpack_require__(300);
+	var _reactKonva = __webpack_require__(301);
 	
-	var _memberNode = __webpack_require__(308);
+	var _memberNode = __webpack_require__(309);
 	
 	var _memberNode2 = _interopRequireDefault(_memberNode);
+	
+	var _info = __webpack_require__(310);
+	
+	var _info2 = _interopRequireDefault(_info);
+	
+	var _text = __webpack_require__(311);
+	
+	var _text2 = _interopRequireDefault(_text);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Members = function Members(_ref) {
 	  var members = _ref.members,
+	      positions = _ref.positions,
+	      lead = _ref.lead,
 	      hierarchy = _ref.hierarchy;
 	
 	  return _react2.default.createElement(
@@ -32075,9 +32196,6 @@
 	      null,
 	      'Members'
 	    ),
-	    Object.keys(members).map(function (id) {
-	      return _react2.default.createElement(_member2.default, { name: members[id].name, role: hierarchy[id] });
-	    }),
 	    _react2.default.createElement(
 	      _reactKonva.Stage,
 	      { width: 700, height: 700 },
@@ -32085,8 +32203,10 @@
 	        _reactKonva.Layer,
 	        null,
 	        Object.keys(members).map(function (id, int) {
-	          return _react2.default.createElement(_memberNode2.default, { xcoor: 100 * int });
-	        })
+	          console.log(members[id].name);
+	          return _react2.default.createElement(_memberNode2.default, { id: id, name: members[id].name, coor: positions[id] });
+	        }),
+	        _react2.default.createElement(_text2.default, null)
 	      )
 	    )
 	  );
@@ -32095,7 +32215,7 @@
 	exports.default = Members;
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32136,23 +32256,23 @@
 	exports.default = Member;
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Adapted from ReactART:
 	// https://github.com/reactjs/react-art
 	
-	var Konva = __webpack_require__(301);
+	var Konva = __webpack_require__(302);
 	var React = __webpack_require__(2);
 	
 	var PropTypes = __webpack_require__(184);
-	var createClass = __webpack_require__(304);
+	var createClass = __webpack_require__(305);
 	
 	var ReactInstanceMap = __webpack_require__(120);
 	var ReactMultiChild = __webpack_require__(118);
 	var ReactUpdates = __webpack_require__(60);
 	
-	var assign = __webpack_require__(307);
+	var assign = __webpack_require__(308);
 	var emptyObject = __webpack_require__(19);
 	
 	// some patching to make Konva.Node looks like DOM nodes
@@ -32531,7 +32651,7 @@
 
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*
@@ -32784,8 +32904,8 @@
 	      // Node. Does not work with strict CommonJS, but
 	      // only CommonJS-like enviroments that support module.exports,
 	      // like Node.
-	      var Canvas = __webpack_require__(302);
-	      var jsdom = __webpack_require__(303).jsdom;
+	      var Canvas = __webpack_require__(303);
+	      var jsdom = __webpack_require__(304).jsdom;
 	
 	      Konva.window = jsdom(
 	        '<!DOCTYPE html><html><head></head><body></body></html>'
@@ -50584,12 +50704,6 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 302 */
-/***/ (function(module, exports) {
-
-	/* (ignored) */
-
-/***/ }),
 /* 303 */
 /***/ (function(module, exports) {
 
@@ -50597,32 +50711,9 @@
 
 /***/ }),
 /* 304 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 */
-	
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	var factory = __webpack_require__(305);
-	
-	// Hack to grab NoopUpdateQueue from isomorphic React
-	var ReactNoopUpdateQueue = new React.Component().updater;
-	
-	module.exports = factory(
-	  React.Component,
-	  React.isValidElement,
-	  ReactNoopUpdateQueue
-	);
-
+	/* (ignored) */
 
 /***/ }),
 /* 305 */
@@ -50640,7 +50731,36 @@
 	
 	'use strict';
 	
-	var _assign = __webpack_require__(306);
+	var React = __webpack_require__(1);
+	var factory = __webpack_require__(306);
+	
+	// Hack to grab NoopUpdateQueue from isomorphic React
+	var ReactNoopUpdateQueue = new React.Component().updater;
+	
+	module.exports = factory(
+	  React.Component,
+	  React.isValidElement,
+	  ReactNoopUpdateQueue
+	);
+
+
+/***/ }),
+/* 306 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+	
+	'use strict';
+	
+	var _assign = __webpack_require__(307);
 	
 	var emptyObject = __webpack_require__(19);
 	var _invariant = __webpack_require__(7);
@@ -51355,102 +51475,6 @@
 
 
 /***/ }),
-/* 306 */
-/***/ (function(module, exports) {
-
-	/*
-	object-assign
-	(c) Sindre Sorhus
-	@license MIT
-	*/
-	
-	'use strict';
-	/* eslint-disable no-unused-vars */
-	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-	
-	function toObject(val) {
-		if (val === null || val === undefined) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-	
-		return Object(val);
-	}
-	
-	function shouldUseNative() {
-		try {
-			if (!Object.assign) {
-				return false;
-			}
-	
-			// Detect buggy property enumeration order in older V8 versions.
-	
-			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-			test1[5] = 'de';
-			if (Object.getOwnPropertyNames(test1)[0] === '5') {
-				return false;
-			}
-	
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test2 = {};
-			for (var i = 0; i < 10; i++) {
-				test2['_' + String.fromCharCode(i)] = i;
-			}
-			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-				return test2[n];
-			});
-			if (order2.join('') !== '0123456789') {
-				return false;
-			}
-	
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test3 = {};
-			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-				test3[letter] = letter;
-			});
-			if (Object.keys(Object.assign({}, test3)).join('') !==
-					'abcdefghijklmnopqrst') {
-				return false;
-			}
-	
-			return true;
-		} catch (err) {
-			// We don't expect any of the above to throw, but better to be safe.
-			return false;
-		}
-	}
-	
-	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-		var from;
-		var to = toObject(target);
-		var symbols;
-	
-		for (var s = 1; s < arguments.length; s++) {
-			from = Object(arguments[s]);
-	
-			for (var key in from) {
-				if (hasOwnProperty.call(from, key)) {
-					to[key] = from[key];
-				}
-			}
-	
-			if (getOwnPropertySymbols) {
-				symbols = getOwnPropertySymbols(from);
-				for (var i = 0; i < symbols.length; i++) {
-					if (propIsEnumerable.call(from, symbols[i])) {
-						to[symbols[i]] = from[symbols[i]];
-					}
-				}
-			}
-		}
-	
-		return to;
-	};
-
-
-/***/ }),
 /* 307 */
 /***/ (function(module, exports) {
 
@@ -51548,12 +51572,108 @@
 
 /***/ }),
 /* 308 */
+/***/ (function(module, exports) {
+
+	/*
+	object-assign
+	(c) Sindre Sorhus
+	@license MIT
+	*/
+	
+	'use strict';
+	/* eslint-disable no-unused-vars */
+	var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+	
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+	
+		return Object(val);
+	}
+	
+	function shouldUseNative() {
+		try {
+			if (!Object.assign) {
+				return false;
+			}
+	
+			// Detect buggy property enumeration order in older V8 versions.
+	
+			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+			var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+			test1[5] = 'de';
+			if (Object.getOwnPropertyNames(test1)[0] === '5') {
+				return false;
+			}
+	
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test2 = {};
+			for (var i = 0; i < 10; i++) {
+				test2['_' + String.fromCharCode(i)] = i;
+			}
+			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+				return test2[n];
+			});
+			if (order2.join('') !== '0123456789') {
+				return false;
+			}
+	
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test3 = {};
+			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+				test3[letter] = letter;
+			});
+			if (Object.keys(Object.assign({}, test3)).join('') !==
+					'abcdefghijklmnopqrst') {
+				return false;
+			}
+	
+			return true;
+		} catch (err) {
+			// We don't expect any of the above to throw, but better to be safe.
+			return false;
+		}
+	}
+	
+	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+	
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+	
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+	
+			if (getOwnPropertySymbols) {
+				symbols = getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+	
+		return to;
+	};
+
+
+/***/ }),
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -51564,7 +51684,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactKonva = __webpack_require__(300);
+	var _reactKonva = __webpack_require__(301);
+	
+	var _canvas = __webpack_require__(284);
+	
+	var _group = __webpack_require__(283);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -51574,70 +51698,195 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    changeText: function changeText(text) {
+	      dispatch((0, _canvas.setText)(text));
+	    },
+	    toogleCoor: function toogleCoor(theview, x, y) {
+	      dispatch((0, _canvas.setCoor)(x, y));
+	    },
+	    changePos: function changePos(id, pos) {
+	      dispatch((0, _group.setPosition)(id, pos));
+	    }
+	  };
+	};
+	
 	var memberNode = function (_Component) {
-	    _inherits(memberNode, _Component);
+	  _inherits(memberNode, _Component);
 	
-	    function memberNode() {
-	        var _ref;
+	  function memberNode() {
+	    var _ref;
 	
-	        _classCallCheck(this, memberNode);
+	    _classCallCheck(this, memberNode);
 	
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	            args[_key] = arguments[_key];
-	        }
-	
-	        var _this = _possibleConstructorReturn(this, (_ref = memberNode.__proto__ || Object.getPrototypeOf(memberNode)).call.apply(_ref, [this].concat(args)));
-	
-	        _this.state = {
-	            color: 'green',
-	            x: _this.props.xcoor,
-	            y: 10
-	        };
-	        _this.handleClick = _this.handleClick.bind(_this);
-	        _this.handleDragStart = _this.handleDragStart.bind(_this);
-	        return _this;
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
 	    }
 	
-	    _createClass(memberNode, [{
-	        key: 'handleDragStart',
-	        value: function handleDragStart() {
-	            console.log('dragStart', this.state.x);
-	            /*figure out how to keep track of the position*/
+	    var _this = _possibleConstructorReturn(this, (_ref = memberNode.__proto__ || Object.getPrototypeOf(memberNode)).call.apply(_ref, [this].concat(args)));
 	
-	            //conva may not be draggable
-	            //have coordinates out of bound if not a part of it.
+	    _this.state = {
+	      view: false,
+	      color: 'blue'
+	    };
+	    _this.handleClick = _this.handleClick.bind(_this);
+	    _this.handleDragEnd = _this.handleDragEnd.bind(_this);
+	    _this.handleDragStart = _this.handleDragStart.bind(_this);
+	    return _this;
+	  }
 	
+	  _createClass(memberNode, [{
+	    key: 'handleDragStart',
+	    value: function handleDragStart(e) {
+	      this.props.changeText('');
+	    }
+	  }, {
+	    key: 'handleDragEnd',
+	    value: function handleDragEnd(e) {
 	
-	            //have it just clickable 
-	        }
-	    }, {
-	        key: 'handleClick',
-	        value: function handleClick() {
-	            //don't set state but rather toggle something else that way we don't need to care about the x and y coord
-	            console.log('render text at designated Info section');
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this2 = this;
+	      var x = e.target.x();
+	      var y = e.target.y();
+	      var id = this.props.id;
+	      this.props.changePos(id, { x: x, y: y });
+	    }
+	  }, {
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      var newView = !this.state.view;
+	      this.setState({
+	        color: 'blue',
+	        view: newView
+	      });
+	      this.props.toogleCoor(newView, this.props.coor.x, this.props.coor.y + 45);
+	      this.props.changeText(this.props.name);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
 	
-	            return _react2.default.createElement(_reactKonva.Rect, {
-	                draggable: true,
-	                x: this.props.xcoor, y: 10, width: 50, height: 50,
-	                fill: this.state.color,
-	                shadowBlur: 10,
-	                onClick: function onClick() {
-	                    return _this2.handleClick();
-	                },
-	                onDragStart: this.handleDragStart
-	            });
-	        }
-	    }]);
+	      var xCoor = 0;
+	      var yCoor = 0;
+	      if (this.props.coor) {
+	        xCoor = this.props.coor.x;
+	        yCoor = this.props.coor.y;
+	      }
+	      return _react2.default.createElement(_reactKonva.Rect, {
+	        draggable: true,
+	        x: xCoor, y: yCoor, width: 50, height: 50,
+	        fill: this.state.color,
+	        shadowBlur: 10,
+	        onClick: function onClick() {
+	          return _this2.handleClick();
+	        },
+	        onDragStart: this.handleDragStart,
+	        onDragEnd: this.handleDragEnd
+	      });
+	    }
+	  }]);
 	
-	    return memberNode;
+	  return memberNode;
 	}(_react.Component);
 	
-	exports.default = memberNode;
+	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(memberNode);
+
+/***/ }),
+/* 310 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(182);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    info: state.canvas.info
+	  };
+	};
+	
+	var Info = function Info(_ref) {
+	  var info = _ref.info;
+	
+	
+	  // test clicking of a node to see if it changes anything. 
+	  //
+	
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'col-5-md' },
+	    _react2.default.createElement(
+	      'p',
+	      null,
+	      info
+	    )
+	  );
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(Info);
+
+/***/ }),
+/* 311 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactKonva = __webpack_require__(301);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(182);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    text: state.canvas.info,
+	    xcoor: state.canvas.x,
+	    ycoor: state.canvas.y
+	  };
+	};
+	
+	var TextLabel = function TextLabel(_ref) {
+	  var text = _ref.text,
+	      xcoor = _ref.xcoor,
+	      ycoor = _ref.ycoor;
+	
+	
+	  return _react2.default.createElement(
+	    _reactKonva.Label,
+	    {
+	      x: xcoor,
+	      y: ycoor,
+	      opacity: 0.75
+	    },
+	    _react2.default.createElement(_reactKonva.Text, {
+	      text: text,
+	      fontFamily: 'Calibri',
+	      fontSize: 18,
+	      padding: 5,
+	      fill: 'black'
+	    })
+	  );
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(TextLabel);
 
 /***/ })
 /******/ ]);
