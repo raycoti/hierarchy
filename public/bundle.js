@@ -30613,6 +30613,7 @@
 	
 	var SET_TEXT = exports.SET_TEXT = 'SET_TEXT';
 	var SET_COOR = exports.SET_COOR = 'SET_COOR';
+	var SET_ROLE = exports.SET_ROLE = 'SET_ROLE';
 
 /***/ }),
 /* 283 */
@@ -30730,8 +30731,8 @@
 	
 	var createPositions = function createPositions(members) {
 	  return function (dispatch) {
-	    var positions = Object.keys(members).reduce(function (acc, cur) {
-	      acc[cur] = { x: 0, y: 0 };
+	    var positions = Object.keys(members).reduce(function (acc, cur, int) {
+	      acc[cur] = { x: 100 + int * 100, y: 100 };
 	      return acc;
 	    }, {});
 	    dispatch(setPositions(positions));
@@ -30758,7 +30759,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setCoor = exports.setText = undefined;
+	exports.setRole = exports.setCoor = exports.setText = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -30773,6 +30774,9 @@
 	      newState.x = action.x;
 	      newState.y = action.y;
 	      break;
+	    case _constants.SET_ROLE:
+	      newState.role = action.role;
+	      break;
 	    default:
 	      return state;
 	  }
@@ -30782,9 +30786,10 @@
 	var _constants = __webpack_require__(282);
 	
 	var initialState = {
-	  info: '',
-	  x: -1000,
-	  y: -10
+	  info: '', //read (name)
+	  role: '',
+	  x: 0,
+	  y: 0
 	};
 	
 	var setText = exports.setText = function setText(info) {
@@ -30799,6 +30804,13 @@
 	    type: _constants.SET_COOR,
 	    x: x,
 	    y: y
+	  };
+	};
+	
+	var setRole = exports.setRole = function setRole(role) {
+	  return {
+	    type: _constants.SET_ROLE,
+	    role: role
 	  };
 	};
 	
@@ -32204,7 +32216,9 @@
 	        null,
 	        Object.keys(members).map(function (id, int) {
 	          console.log(members[id].name);
-	          return _react2.default.createElement(_memberNode2.default, { id: id, name: members[id].name, coor: positions[id] });
+	          var role = "";
+	          if (hierarchy[id]) role = hierarchy[id].role;
+	          return _react2.default.createElement(_memberNode2.default, { key: id, id: id, role: role, name: members[id].name, coor: positions[id] });
 	        }),
 	        _react2.default.createElement(_text2.default, null)
 	      )
@@ -51703,6 +51717,9 @@
 	    changeText: function changeText(text) {
 	      dispatch((0, _canvas.setText)(text));
 	    },
+	    changeRole: function changeRole(role) {
+	      dispatch((0, _canvas.setRole)(role));
+	    },
 	    toogleCoor: function toogleCoor(theview, x, y) {
 	      dispatch((0, _canvas.setCoor)(x, y));
 	    },
@@ -51740,6 +51757,7 @@
 	    key: 'handleDragStart',
 	    value: function handleDragStart(e) {
 	      this.props.changeText('');
+	      this.props.changeRole('');
 	    }
 	  }, {
 	    key: 'handleDragEnd',
@@ -51754,12 +51772,14 @@
 	    key: 'handleClick',
 	    value: function handleClick() {
 	      var newView = !this.state.view;
+	      var role = this.props.role || '';
 	      this.setState({
 	        color: 'blue',
 	        view: newView
 	      });
 	      this.props.toogleCoor(newView, this.props.coor.x, this.props.coor.y + 45);
 	      this.props.changeText(this.props.name);
+	      this.props.changeRole(role);
 	    }
 	  }, {
 	    key: 'render',
@@ -51859,12 +51879,14 @@
 	  return {
 	    text: state.canvas.info,
 	    xcoor: state.canvas.x,
-	    ycoor: state.canvas.y
+	    ycoor: state.canvas.y,
+	    role: state.canvas.role
 	  };
 	};
 	
 	var TextLabel = function TextLabel(_ref) {
 	  var text = _ref.text,
+	      role = _ref.role,
 	      xcoor = _ref.xcoor,
 	      ycoor = _ref.ycoor;
 	
@@ -51877,7 +51899,7 @@
 	      opacity: 0.75
 	    },
 	    _react2.default.createElement(_reactKonva.Text, {
-	      text: text,
+	      text: text + '\n' + role,
 	      fontFamily: 'Calibri',
 	      fontSize: 18,
 	      padding: 5,

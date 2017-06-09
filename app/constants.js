@@ -12,3 +12,4 @@ export const CHANGE_POSITION= 'CHANGE_POSITION';
 
 export const SET_TEXT = 'SET_TEXT'; 
 export const SET_COOR = 'SET_COOR';
+export const SET_ROLE = 'SET_ROLE';

@@ -1,11 +1,14 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
 import { Rect } from 'react-konva';
-import {setText, setCoor} from '../reducers/canvas';
+import {setText, setCoor, setRole} from '../reducers/canvas';
 import {setPosition} from '../reducers/group'
 const mapDispatchToProps = (dispatch) => ({
   changeText(text){
     dispatch(setText(text))
+  },
+  changeRole(role){
+    dispatch(setRole(role))
   },
   toogleCoor(theview,x,y){
     dispatch(setCoor(x,y))
@@ -24,11 +27,12 @@ class memberNode extends Component {
       };
       this.handleClick = this.handleClick.bind(this);
       this.handleDragEnd = this.handleDragEnd.bind(this);
-      this.handleDragStart = this.handleDragStart.bind(this)
+      this.handleDragStart = this.handleDragStart.bind(this);
     }
     
     handleDragStart(e){
      this.props.changeText('')
+     this.props.changeRole('')
 
   };
     handleDragEnd(e){
@@ -41,12 +45,14 @@ class memberNode extends Component {
   };
     handleClick() {
      const newView= !this.state.view;
+     const role = this.props.role || '';
        this.setState({
         color:'blue',
         view: newView
       })
       this.props.toogleCoor(newView,this.props.coor.x,this.props.coor.y+45)
       this.props.changeText(this.props.name)
+      this.props.changeRole(role)
     }
     render() {
         let xCoor = 0;
