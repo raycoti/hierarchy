@@ -5,11 +5,12 @@ import {connect} from 'react-redux';
 const mapStateToProps = (state)=>({
   text: state.canvas.info,
   xcoor: state.canvas.x,
-  ycoor: state.canvas.y
+  ycoor: state.canvas.y,
+  role: state.canvas.role
 })
 
 
-const TextLabel = function({text,xcoor,ycoor}){
+const TextLabel = function({text,role,xcoor,ycoor}){
 
   return (
     <Label 
@@ -18,7 +19,7 @@ const TextLabel = function({text,xcoor,ycoor}){
         opacity={0.75}
     > 
       <Text
-      text={text}
+      text={text + '\n' +role}
        fontFamily= 'Calibri'
         fontSize= {18}
         padding= {5}

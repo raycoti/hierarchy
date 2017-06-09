@@ -1,9 +1,10 @@
-import {SET_TEXT, SET_COOR} from '../constants';
+import {SET_TEXT, SET_COOR, SET_ROLE} from '../constants';
 
 const initialState = {
-  info: '',
-  x: -1000,
-  y: -10,
+  info: '',//read (name)
+  role: '',
+  x: 0,
+  y: 0,
 }
 
 
@@ -16,6 +17,9 @@ export default function(state=initialState, action){
     case SET_COOR:
       newState.x = action.x;
       newState.y = action.y;
+      break;
+    case SET_ROLE:
+      newState.role = action.role;
       break;
     default:
       return state;
@@ -32,6 +36,11 @@ export const setCoor = (x,y) => ({
   type: SET_COOR,
   x,
   y
+})
+
+export const setRole = (role) => ({
+  type: SET_ROLE,
+  role
 })
 
 //placeholder

@@ -14,22 +14,11 @@ const Members = function({members,positions,lead, hierarchy}){
       <Layer >    
         {Object.keys(members).map((id,int) => {
           console.log(members[id].name)
-          return <MemberNode id={id} name={members[id].name} coor={positions[id]}/>
+          let role=""; 
+          if(hierarchy[id]) role = hierarchy[id].role
+          return <MemberNode key={id} id={id} role={role} name={members[id].name} coor={positions[id]}/>
         })}
       <TextLabel />
-  {/*      <Label 
-        x={10}
-        y={10}
-        opacity={0.75}>
-        <Text
-         text='Label pointing left'
-        fontFamily= 'Calibri'
-        fontSize= {18}
-        padding= {5}
-        fill= 'white'>
-
-        </Text>
-        </Label>*/}
       </Layer>
     </Stage>
     </div>

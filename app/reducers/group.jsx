@@ -87,13 +87,19 @@ export const getMembers = (groupId) => {
 
 const createPositions = (members)=> {
   return (dispatch) => {
-    const positions = Object.keys(members).reduce((acc,cur)=>{
-      acc[cur] = {x:0, y:0};
+    const positions = Object.keys(members).reduce((acc,cur,int)=>{
+      acc[cur] = {x: 100+ int*100, y:100};
       return acc;
     },{})
     dispatch(setPositions(positions))
   }
 } 
+
+const changePositions = (members,lead,hierarchy)=> {
+  //dispatched on subcomittie change, will start from lead and traverse hierarchy to update position of members
+  //might not need members
+}
+
 
 /*
 {
