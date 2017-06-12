@@ -14,9 +14,13 @@ const Members = function({members,positions,lead, hierarchy}){
       <Layer >    
         {Object.keys(members).map((id,int) => {
           console.log(members[id].name)
-          let role=""; 
-          if(hierarchy[id]) role = hierarchy[id].role
-          return <MemberNode key={id} id={id} role={role} name={members[id].name} coor={positions[id]}/>
+          let role=""; ;
+          let position
+          if(hierarchy[id]) {role = hierarchy[id].role; position =positions[id]}
+          else{
+            position = {x:0, y:10000}
+          }
+          return <MemberNode key={id} id={id} role={role} name={members[id].name} coor={position}/>
         })}
       <TextLabel />
       </Layer>

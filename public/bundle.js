@@ -26997,6 +26997,8 @@
 	
 	var _constants = __webpack_require__(282);
 	
+	var _group = __webpack_require__(283);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var initialState = {
@@ -27051,19 +27053,22 @@
 	  };
 	};
 	
-	var getSubgroup = exports.getSubgroup = function getSubgroup(id) {
+	var getSubgroup = exports.getSubgroup = function getSubgroup(id, members) {
 	  return function (dispatch) {
 	    _axios2.default.get('api/subgroup/' + id).then(function (subgroup) {
 	      dispatch(setSubgroup(id));
 	      dispatch(setLead(subgroup.data.leadID));
+	      dispatch(getHierarchy(id, subgroup.data.leadID, members));
 	    });
 	  };
 	};
 	
-	var getHierarchy = exports.getHierarchy = function getHierarchy(groupId) {
+	var getHierarchy = exports.getHierarchy = function getHierarchy(groupId, leadId, members) {
 	  return function (dispatch) {
 	    _axios2.default.get('api/relationships/' + groupId).then(function (subgroup) {
 	      return dispatch(setHierarchy(subgroup.data));
+	    }).then(function (data) {
+	      return dispatch((0, _group.changePositions)(members, leadId, data.hierarchy));
 	    });
 	  };
 	};
@@ -30624,7 +30629,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.getMembers = exports.getGroups = exports.setPosition = exports.setPositions = exports.setMembers = exports.setGroup = exports.setGroups = undefined;
+	exports.changePositions = exports.getMembers = exports.getGroups = exports.setPosition = exports.setPositions = exports.setMembers = exports.setGroup = exports.setGroups = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -30737,6 +30742,30 @@
 	    }, {});
 	    dispatch(setPositions(positions));
 	  };
+	};
+	
+	var changePositions = exports.changePositions = function changePositions(members, lead, hierarchy) {
+	  return function (dispatch) {
+	
+	    var x = 200;
+	    var y = 0;
+	    var positions = traverseHierarchy(lead, hierarchy, {}, x, y, 1);
+	    dispatch(setPositions(positions));
+	  };
+	  //dispatched on subcomittie change, will start from lead and traverse hierarchy to update position of members
+	  //might not need members
+	};
+	
+	var traverseHierarchy = function traverseHierarchy(current, hierarchy, positions, x, y, level) {
+	  positions[current] = { x: x, y: y };
+	  console.log(hierarchy);
+	  var nextLevel = level + 1;
+	  var children = hierarchy[current].children.split(',');
+	  if (children[0] === '') return positions;
+	  children.forEach(function (element, i) {
+	    positions = traverseHierarchy(element, hierarchy, positions, x + 100 * i, nextLevel * 100, nextLevel);
+	  });
+	  return positions;
 	};
 	
 	/*
@@ -31986,7 +32015,8 @@
 	    current: state.main.id,
 	    subGroups: state.sub.subGroups,
 	    subGroup: state.sub.id,
-	    lead: state.sub.lead
+	    members: state.main.members,
+	    hierarchy: state.sub.hierarchy
 	  };
 	};
 	
@@ -31997,9 +32027,8 @@
 	      dispatch((0, _subGroup.getSubgroups)(id));
 	      dispatch((0, _group.setGroup)(name));
 	    },
-	    selectSubGroup: function selectSubGroup(id) {
-	      dispatch((0, _subGroup.getSubgroup)(id));
-	      dispatch((0, _subGroup.getHierarchy)(id));
+	    selectSubGroup: function selectSubGroup(id, members) {
+	      dispatch((0, _subGroup.getSubgroup)(id, members));
 	    }
 	  };
 	};
@@ -32033,13 +32062,13 @@
 	      var id = e.target.value;
 	      if (id === 'default') return;
 	      if (this.props.subGroup === id) return;
-	      this.props.selectSubGroup(id);
+	      this.props.selectSubGroup(id, this.props.members);
 	      //clear text when switches
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(_search2.default, { subChange: this.subChange, onChange: this.onChange });
+	      return _react2.default.createElement(_search2.default, { subChange: this.subChange, onClick: this.props.changePos, onChange: this.onChange });
 	    }
 	  }]);
 	
@@ -32216,9 +32245,14 @@
 	        null,
 	        Object.keys(members).map(function (id, int) {
 	          console.log(members[id].name);
-	          var role = "";
-	          if (hierarchy[id]) role = hierarchy[id].role;
-	          return _react2.default.createElement(_memberNode2.default, { key: id, id: id, role: role, name: members[id].name, coor: positions[id] });
+	          var role = "";;
+	          var position = void 0;
+	          if (hierarchy[id]) {
+	            role = hierarchy[id].role;position = positions[id];
+	          } else {
+	            position = { x: 0, y: 10000 };
+	          }
+	          return _react2.default.createElement(_memberNode2.default, { key: id, id: id, role: role, name: members[id].name, coor: position });
 	        }),
 	        _react2.default.createElement(_text2.default, null)
 	      )

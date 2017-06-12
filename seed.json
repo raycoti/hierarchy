@@ -77,6 +77,27 @@
       "name": "Student 2",
       "description": "",
       "groupId": "2"
+    },
+
+      {
+      "id": "6",
+      "name": "Prof. Calc",
+      "description": "",
+      "groupId": "1" 
+
+      },
+      {
+        "id": "7",
+      "name": "Prof. Algebra",
+      "description": "",
+      "groupId": "1"
+      
+    },
+    {
+      "id": "8",
+      "name": "Prof Discrete",
+      "description": "",
+      "groupId": "1"
     }
   ],
    "relationships":
@@ -84,7 +105,7 @@
     {
       "role": "Secretary",
       "description": "",
-      "children": "",
+      "children": "6,8",
       "subGroupId":"1",
       "personId": "1" 
       },
@@ -98,10 +119,33 @@
     {
       "role": "Treasurer",
       "description": "",
-      "children": "",
+      "children": "7",
       "subGroupId":"1",
       "personId": "3"
     },
+
+    {
+      "role": "member",
+      "description": "",
+      "children": "",
+      "subGroupId":"1",
+      "personId": "6" 
+      },
+      {
+      "role": "member",
+      "description": "",
+      "children": "",
+      "subGroupId":"1",
+      "personId": "7"
+    },
+    {
+      "role": "member",
+      "description": "",
+      "children": "",
+      "subGroupId":"1",
+      "personId": "8"
+    },
+
     {
       "role": "Leader",
       "description": "",

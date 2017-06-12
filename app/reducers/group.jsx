@@ -95,11 +95,29 @@ const createPositions = (members)=> {
   }
 } 
 
-const changePositions = (members,lead,hierarchy)=> {
+export const changePositions = (members,lead,hierarchy)=> {
+  return (dispatch) => {
+
+    let x = 200;
+    let y = 0;
+    const positions = traverseHierarchy(lead, hierarchy,{},x,y,1) ;
+    dispatch(setPositions(positions));
+  }
   //dispatched on subcomittie change, will start from lead and traverse hierarchy to update position of members
   //might not need members
 }
 
+const traverseHierarchy = (current, hierarchy,positions,x,y,level) => {
+  positions[current]={x,y};
+  console.log(hierarchy)
+  const nextLevel= level+1;
+  const children = hierarchy[current].children.split(',');
+    if(children[0]==='') return positions;
+    children.forEach(function(element,i) {
+      positions = traverseHierarchy(element, hierarchy, positions,x+100*i,nextLevel*100, nextLevel)
+    });
+  return positions;
+}
 
 /*
 {
