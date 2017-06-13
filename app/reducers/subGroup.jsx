@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {SET_SUBGROUP, SET_HIERARCHY, SET_LEAD, SET_SUBGROUPS} from '../constants';
+import {changePositions} from './group'
 
 const initialState = {
   id: -1,
@@ -67,20 +68,22 @@ export const getSubgroups = (groupId) => {
   }
 }
 
-export const getSubgroup = (id) => {
+export const getSubgroup = (id, members) => {
   return (dispatch) => {
     axios.get(`api/subgroup/${id}`)
       .then(subgroup => {
         dispatch(setSubgroup(id));
-        dispatch(setLead(subgroup.data.leadID));
+        dispatch(setLead(subgroup.data.leadID))
+        dispatch(getHierarchy(id,subgroup.data.leadID,members));
       });
   };
 };
 
-export const getHierarchy = (groupId) => {
+export const getHierarchy = (groupId,leadId,members) => {
   return (dispatch) => {
     axios.get(`api/relationships/${groupId}`)
-      .then(subgroup => dispatch(setHierarchy(subgroup.data)));
+      .then(subgroup => dispatch(setHierarchy(subgroup.data)))
+      .then(data=>dispatch(changePositions(members,leadId, data.hierarchy)));
   };
 };
 

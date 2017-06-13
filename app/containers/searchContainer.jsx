@@ -1,6 +1,6 @@
 import {connect} from 'react-redux';
 import React, {Component} from 'react';
-import {getGroups, getMembers, setGroup} from '../reducers/group';
+import {getGroups, getMembers, setGroup, changePositions} from '../reducers/group';
 import {getSubgroup, getHierarchy, getSubgroups} from '../reducers/subGroup';
 import Search from '../components/search';
 //import People from '../components/people';
@@ -10,7 +10,8 @@ const mapStateToProps = (state) => {
     current: state.main.id,
     subGroups: state.sub.subGroups,
     subGroup: state.sub.id,
-    lead: state.sub.lead,
+    members: state.main.members,
+    hierarchy: state.sub.hierarchy,
   }
 }
 
@@ -21,9 +22,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getSubgroups(id))
       dispatch(setGroup(name))
     },
-    selectSubGroup(id){
-      dispatch(getSubgroup(id))
-      dispatch(getHierarchy(id))
+    selectSubGroup(id, members){
+      dispatch(getSubgroup(id, members))
     }
 
   }
@@ -49,12 +49,12 @@ class SearchContainer extends Component {
      const id = e.target.value;
      if(id==='default') return;
      if(this.props.subGroup===id) return;
-     this.props.selectSubGroup(id);
+     this.props.selectSubGroup(id,this.props.members);
     //clear text when switches
   }
   render(){
     return(
-      <Search subChange={this.subChange} onChange={this.onChange} />
+      <Search subChange={this.subChange} onClick={this.props.changePos} onChange={this.onChange} />
     )
   }
 }
