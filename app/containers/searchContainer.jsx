@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {getGroups, getMembers, setGroup, changePositions} from '../reducers/group';
 import {getSubgroup, getHierarchy, getSubgroups} from '../reducers/subGroup';
 import Search from '../components/search';
+import {setRole, setText} from '../reducers/canvas';
 //import People from '../components/people';
 const mapStateToProps = (state) => {
   return {
@@ -21,9 +22,13 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(getMembers(id))
       dispatch(getSubgroups(id))
       dispatch(setGroup(name))
+      dispatch(setRole(''));
+      dispatch(setText(''));
     },
     selectSubGroup(id, members){
       dispatch(getSubgroup(id, members))
+      dispatch(setRole(''));
+      dispatch(setText(''));
     }
 
   }
